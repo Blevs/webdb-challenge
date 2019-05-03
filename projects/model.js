@@ -7,7 +7,7 @@ module.exports = {
 
 function get(id) {
   if (id) {
-    const projectQuery = db('projects').where({id});
+    const projectQuery = db('projects').where({id}).first();
     const actionsQuery = db('actions').where({project_id: id});
     return Promise.all([projectQuery, actionsQuery]).then(([project, actions]) => {
       if (project) {
