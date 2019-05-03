@@ -39,5 +39,19 @@ router.delete('/:id', (req, res) => {
     .catch(() => res.status(500).json({message: "Error deleting action."}));
 });
 
+router.put('/:id', (req, res) => {
+  const {id} = req.params;
+  const changes = req.body;
+  if (changes && (changes.description || changes.notes || changes.completed || changes.project_id)) {
+    Actions.update(changes, id)
+      .then(action => action
+            ? res.status(200).json(action)
+            : res.status(404).json({message: "No action with id."}))
+      .catch(() => res.status(500).json({message: "Error updating action."}));
+  } else {
+    res.status(400).json({message: "Update requires changes"});
+  }
+});
+
 
 module.exports = router;

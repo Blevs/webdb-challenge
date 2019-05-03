@@ -3,7 +3,8 @@ const db = require('../data/dbConfig.js');
 module.exports = {
   get,
   insert,
-  remove
+  remove,
+  update
 };
 
 function get(id) {
@@ -29,4 +30,11 @@ function remove(id) {
   return db('actions')
     .where({id})
     .del();
+}
+
+function update(changes, id) {
+  return db('actions')
+    .where({id})
+    .update(changes)
+    .then(updated => (updated > 0 ? get(id) : null));
 }
