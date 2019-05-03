@@ -8,9 +8,13 @@ module.exports = {
 function get(id) {
   if (id) {
     const projectQuery = db('projects').where({id}).first();
-    const actionsQuery = db('actions').where({project_id: id});
+    const actionsQuery = db('actions')
+          .select('id', 'description', 'notes', 'completed')
+          .where({project_id: id});
     return Promise.all([projectQuery, actionsQuery]).then(([project, actions]) => {
       if (project) {
+        project.completed = Boolean(project.completed);
+        actions.forEach(a => a.completed = Boolean(a.completed));
         project.actions = actions;
         return project;
       } else {
@@ -18,7 +22,8 @@ function get(id) {
       }
     });
   } else {
-    return db('projects');
+    return db('projects')
+      .then(projects => projects.map(p => ({...p, completed: Boolean(p.completed)})));
   }
 }
 
