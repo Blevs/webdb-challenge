@@ -2,7 +2,8 @@ const db = require('../data/dbConfig.js');
 
 module.exports = {
   get,
-  insert
+  insert,
+  remove
 };
 
 function get(id) {
@@ -22,4 +23,10 @@ function insert(action) {
   return db('actions')
     .insert(action, 'id')
     .then(([id]) => get(id));
+}
+
+function remove(id) {
+  return db('actions')
+    .where({id})
+    .del();
 }

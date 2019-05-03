@@ -9,15 +9,6 @@ router.get('/', (req, res) => {
     .catch(() => res.status(500).json({message: "Error fetching actions."}));
 });
 
-router.get('/:id', (req, res) => {
-  const {id} = req.params;
-  Actions.get(id)
-    .then(action => action
-          ? res.status(200).json(action)
-          : res.status(404).json({message: "No action with id."}))
-    .catch(err => console.log(err) || res.status(500).json({message: "Error fetching action"}));
-});
-
 router.post('/', (req, res) => {
   const action = req.body;
   if (action && action.description) {
@@ -29,5 +20,24 @@ router.post('/', (req, res) => {
     res.status(400).json({message: "Action requires description"});
   }
 });
+
+router.get('/:id', (req, res) => {
+  const {id} = req.params;
+  Actions.get(id)
+    .then(action => action
+          ? res.status(200).json(action)
+          : res.status(404).json({message: "No action with id."}))
+    .catch(() => res.status(500).json({message: "Error fetching action"}));
+});
+
+router.delete('/:id', (req, res) => {
+  const {id} = req.params;
+  Actions.remove(id)
+    .then(deleted => deleted
+          ? res.status(204).end()
+          : res.status(404).json({message: "No action with id."}))
+    .catch(() => res.status(500).json({message: "Error deleting action."}));
+});
+
 
 module.exports = router;
